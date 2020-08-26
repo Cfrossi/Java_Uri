@@ -1,0 +1,243 @@
+ - Permite criar uma base de dados
+create database ITAU
+-----------------------------------------------------------
+- Permite usar o banco
+ Use itau
+
+ou
+itau.nome_da_tabela se voce não usar o use antes
+
+-----------------------------------------------------
+Permite criar tabela com campos
+
+create table itau.nome_da_tabela
+
+create table itau.clientes (
+codigo_clientes int(6) not null,
+nome_cliente varchar(50) not null,
+idade_cliente int(3),
+email_cliente varchar(80) not null
+)
+
+
+not null significa que eu não quro essa campo nulo
+----------------------------------------------------------
+Premite mostrar a estrutura criada
+
+describe itau.clientes
+
+
+-------------------------------------------------------------------
+INSERIR DADOS NA TABELA
+
+ - Todo valor númerico você entra direto
+ - Todo valor texto, entra com aspas duplas ""
+
+insert into itau.clientes
+(codigo_clientes,nome_cliente,idade_cliente,email_cliente)
+
+values
+(1,"Caio Fernando Rossi",33,"caio_cien_comp@yahoo.com.br")
+
+--------------------------------------------------------------
+SELECIONAR TUDO DA TABELA CLIENTES
+
+select * from itau.clientes
+
+
+----------------------------------------
+INSERI MUITOS REGISTROS
+
+insert into itau.clientes
+(codigo_clientes,nome_cliente,idade_cliente,email_cliente)
+values
+(2,"João Pedro",20,"joao_pedro@uol.com.br"),
+(3,"Fulano",15,"fulano_ciclano@uol.com.br"),
+(4,"Beltrano", 40,"beltrano_la@uol.com.br"),
+(5,"Cicrano bel",23,"cicrano_bel@uol.com.br")
+
+
+-----------------------------------------
+LISTAR SOMENTE OS CAMPOS QUE EU QUERO
+
+select nome_cliente,idade_cliente,email_cliente from itau.clientes
+
+
+LISTAR OS CAMPOS QUE EU QUERO, ORDENANDO PELA COLUNA QUE EU QUERO de forma ascendente
+
+select nome_cliente,idade_cliente,email_cliente from itau.clientes ORDER BY nome_cliente asc
+
+LISTAR DE FORMA DESCENDENTE
+select nome_cliente,idade_cliente,email_cliente from itau.clientes ORDER BY nome_cliente DESC
+
+
+---------------------------------------------------
+LISTAR DADOS COM FILTRO ONDE IDADE = 30 ANOS
+
+select nome_cliente,idade_cliente,email_cliente from itau.clientes where idade_cliente = 30;
+
+
+LISTAR COM IDADE DE 30 A 50 ANOS
+select nome_cliente,idade_cliente,email_cliente 
+from itau.clientes
+where idade_cliente >= 30 and idade_cliente <=50
+order by idade_cliente
+____________________________________________________________________________
+LISTAR OS CLIENTE SÓ CO 30 / 40 E 50
+
+select nome_cliente,idade_cliente,email_cliente 
+from itau.clientes
+where idade_cliente in (30,40,50)
+order by idade_cliente
+____________________________________________________________________________
+ADICIONAR UMA NOVA TABELA
+
+ALTER table itau.clientes add endereco_cliente varchar(80) not null;
+
+
+REMOVER UMA COLUNA
+alter table itau.clientes drop endereco;
+
+
+-----------------------------------------------------
+UPDTAE EM TABELA
+
+update itau.clientes set endereco_cliente = "Rua Catao"
+where nome_cliente ="Caio Fernando Rossi"
+
+Preencher todos os campos
+update itau.clientes set endereco_cliente="Atualizar,preencher,endereço"
+where endereco_cliente="";
+
+___________________________________________
+crear backup
+
+create table itau.bck_clientes (select * from itau.clientes);
+____________________________________________________________________________
+ALTERAR UM CAMPO
+
+alter table itau.clientes change idade_cliente idade_cliente int(3) not null;
+
+_____________________________________________________________________________________________________________________________
+Deletar a tabela
+
+drop table itau.clientes_teste
+
+_________________________________________________
+CRIAR UMA NOVA TABELA, PUXANDO OS DADOS DE OUTRA TABELA
+
+create table teste.clientes (Select * from itau.clientes);
+
+_______________________________________________________________________________________________________________________________________
+DELETAR O BANCO DE DADOS INTEIRO
+drop database
+
+______________________________________________________________________________________________________________________________________________
+Deletar um registro da tabela onde a idade for 50
+
+--delete from itau.clientes where idade_cliente =50;
+
+___________________________________________________________________________________________________________________________________
+Criar uma tabela, puxando os dados de outra
+
+insert into itau.clientes
+(codigo_cliente,nome_cliente,idade_cliente,email_cliente,endereco_cliente)
+select codigo_cliente,nome_cliente,idade_cliente,email_cliente,endereco_cliente
+from itau.bck_clientes
+
+Obs: Os campos precisam ter o mesmo nome
+___________________________________________________________________________________________________________
+
+Vamos criar a Primary key para que ele gerencie os registros
+
+OBS:
+ - campos que começam com 0, eu não posso declarar como inteiro
+
+
+create table itau.clientes (
+codigo_cliente int(6) not null auto_increment,
+nome_cliente varchar(50) not null,
+cpf_cliente varchar(11) not null,
+idade_cliente int(3) not null,
+data_cadastro datetime,
+endereco_cliente varchar(80) not null,
+cep_cliente varchar(8) not null,
+email_cliente varchar(80) not null,
+telefone_cliente int(11) not null,
+
+primary key (codigo_cliente)
+)
+
+
+_________________________________________________________________________________________
+Inserir dados em uma tabela puxando de outra que não possui os mesmos campos
+
+insert into itau.clientes (nome_cliente,cpf_cliente,idade_cliente,data_cadastro,
+endereco_cliente,cep_cliente,email_cliente,telefone_cliente)
+select nome_cliente,"cpf_cliente",idade_cliente,now(),endereco_cliente,"cepclien",email_cliente,0 
+from itau.bck_clientes;
+
+____________________________________________________________________________
+SELECIONAR NA TABELA A PESSOA COM MAIOR IDADE
+
+select max(idade_cliente) from itau.clientes
+
+SELECIONAR O NOME DA PESSOA COM MAIOR IDADE
+select * from itau.clientes where idade_cliente = (select max(idade_cliente) from itau.clientes)
+
+SABER O NUMERO DE REGISTROS
+select count(*) from itau.clientes
+
+SABER O NUMERO DE REGISTROS DE PESSOAS COM A IDADE MAXIMA
+select count(*) from itau.clientes WHERE idade_cliente = (select max(idade_cliente) from itau.clientes)
+
+____________________________________________________________________________
+FAZENDO UM JOIN
+codcarg é OK em cargo
+e é forenkey em funcionario
+
+select f.Matricula,f.NomeFuncionario, c.NomeCargo, c.ValorCargo
+from
+itau.funcionario as f,
+itau.cargo as c
+where c.CodCargo=f.CodCargo
+
+____________________________________________________________________________
+FAZENDO INNER JOI
+
+select  f.CodCargo,f.Matricula,c.NomeCargo,c.ValorCargo 
+from itau.cargo as c
+inner join itau.funcionario as f
+on(f.CodCargo=c.CodCargo)
+
+
+_______________
+Left join
+
+select  f.CodCargo,f.Matricula,c.NomeCargo,c.ValorCargo 
+from itau.cargo as c
+left join itau.funcionario as f
+on(c.CodCargo=f.CodCargo)
+
+
+RIGHT JOIN
+select  f.CodCargo,f.Matricula,c.NomeCargo,c.ValorCargo 
+from itau.cargo as c
+right join itau.funcionario as f
+on(c.CodCargo=f.CodCargo)
+
+_____________________________________________________
+UPDATE CAMPO
+
+select * from itau.clientes where endereco_cliente="Rua Paralá";
+
+update itau.clientes set endereco_cliente="Rua paralá, 200" where nome_cliente="Beltranho" ;
+
+select * from itau.clientes where endereco_cliente like "Rua paralá%";
+
+______________________________________________________
+
+SABER POR EXEMPLO
+QUANTO ESTOU  GASTANDO NA MINHA FOLHA DE PAGAMENTO
+soma de todos os cargos
+select sum(ValorCargo) from itau.cargo;

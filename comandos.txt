@@ -1,0 +1,58 @@
+insert into itau.cargo_1
+(CodCargo,NomeCargo,ValorCargo)
+select CodCargo,NomeCargo,ValorCargo from itau.cargo;
+
+select * from itau.funcionario_1;
+insert into itau.funcionario_1
+(Matricula,NomeFuncionario,CodCargo)
+select Matricula,NomeFuncionario,CodCargo from itau.funcionario;
+
+
+select * from itau.funcionario_1;
+
+insert into itau.funcionario_1
+(Matricula,NomeFuncionario,CodCargo)
+values
+(100,"Romuald","C9"),
+(101,"Jose","C9"),
+(102,"Pepa Pig","C9");
+
+
+select  f.CodCargo,f.Matricula,c.NomeCargo,c.ValorCargo 
+from itau.cargo_1 as c
+left join itau.funcionario_1 as f
+on(f.CodCargo=c.CodCargo);
+
+insert into itau.cargo_1(CodCargo,NomeCargo,ValorCargo)
+values
+("C6","Seguranca",2000.00),
+("C7","Faxina",1000.00),
+("C8","Almoxarifado",1500.00);
+
+
+select * from itau.cargo_1;
+
+
+select  f.CodCargo,f.Matricula,c.NomeCargo,c.ValorCargo 
+from itau.cargo_1 as c
+left join itau.funcionario_1 as f
+on(c.CodCargo=f.CodCargo);
+
+select * from itau.clientes;
+select * from itau.clientes where endereco_cliente="Rua Paralá";
+
+update itau.clientes set endereco_cliente="Rua paralá, 200" where nome_cliente="Beltranho" ;
+
+select * from itau.clientes where endereco_cliente like "Rua paralá%";
+
+select * from itau.cargo;
+select sum(ValorCargo) from itau.cargo where CodCargo="C1";
+
+
+create procedure 'backup' ()
+begin
+drop table itau.bkp_clientes;
+create table itau.bkp_clientes
+
+end
+
